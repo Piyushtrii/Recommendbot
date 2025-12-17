@@ -4,7 +4,6 @@ import re
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 
-#FIXED: Load API key CORRECTLY (put BEFORE set_page_config)
 GROQ_API_KEY = st.secrets.get("GROQ_API_KEY")
 
 if not GROQ_API_KEY:
@@ -201,13 +200,13 @@ user_input = st.chat_input("Type here...")
 if user_input:
     user(user_input)
 
-    # STEP 1 — Capture topic
+    #capture topic
     if st.session_state.step == 1:
         st.session_state.topic = user_input
         bot("Great 👍 Now tell me how much you already know about this topic.")
         st.session_state.step = 2
 
-    # STEP 2 — Infer level + recommend
+    #infer level + recommend
     elif st.session_state.step == 2:
         with st.spinner("🧠 Analyzing your skill level..."):
             level = infer_level(user_input)
@@ -234,7 +233,7 @@ if user_input:
             "content": response
         })
 
-    #STEP — Follow-up chat
+    #followup chat
     elif st.session_state.step == 99:
         response = stream_llm([
             SystemMessage(content=FOLLOWUP_PROMPT),
@@ -248,3 +247,4 @@ if user_input:
             "role": "assistant",
             "content": response
         })
+
