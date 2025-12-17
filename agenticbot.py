@@ -144,7 +144,7 @@ def level_agent(skill_text):
         SystemMessage(content=LEVEL_AGENT_PROMPT),
         HumanMessage(content=skill_text)
     ])
-    # SAFE parsing with fallback
+    #parsing with fallback
     try:
         return json.loads(res.content)["level"].lower()
     except:
@@ -162,7 +162,7 @@ def planner_agent():
     try:
         return json.loads(res.content)["action"]
     except:
-        return "follow_up"  # Safe default
+        return "follow_up"  #default setback
 
 
 def tool_agent(topic, level):
@@ -225,13 +225,13 @@ user_input = st.chat_input("Type here...")
 if user_input:
     user(user_input)
 
-    # Topic capture
+    #Topic capture
     if not st.session_state.topic:
         st.session_state.topic = user_input
         st.session_state.awaiting_skill = True
         bot("Great 👍 Tell me how much you already know about this topic.")
 
-    # Skill capture → recommendation
+    #Skill capture + recommendation
     elif st.session_state.awaiting_skill:
         level = level_agent(user_input)
         bot(f"🧠 I infer your level as **{level.capitalize()}**.")
@@ -251,7 +251,7 @@ if user_input:
             "content": response
         })
 
-    # Follow-up chat
+    #Follow-up chat
     else:
         response = stream_llm(
             get_llm_memory() + [
@@ -262,4 +262,5 @@ if user_input:
         st.session_state.messages.append({
             "role": "assistant",
             "content": response
+
         })
